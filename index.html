@@ -1,179 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Food Delivery Dashboard</title>
+  <meta charset="UTF-8">
+  <title>Hotel Booking Dashboard</title>
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #ff512f, #dd2476);
+      color: #fff;
     }
-
+    header {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0,0,0,0.3);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+    header p {
+      margin: 5px 0 0;
+    }
     .container {
-      display: flex;
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 20px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
     }
-
-    .sidebar {
-      width: 200px;
-      background-color: #333;
-      color: #fff;
-      height: 100vh;
-      padding: 20px 10px;
-    }
-
-    .sidebar h2 {
-      text-align: center;
+    .auth, .search-section, .results {
       margin-bottom: 30px;
     }
-
-    .sidebar a {
-      display: block;
-      color: #fff;
-      text-decoration: none;
-      margin: 15px 0;
-      padding: 10px;
-      border-radius: 5px;
-    }
-
-    .sidebar a:hover {
-      background-color: #444;
-    }
-
-    .main {
-      flex-grow: 1;
-      padding: 20px;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-
-    .cards {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      flex: 1;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    .orders-table {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      padding: 20px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
+    input, button {
       padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
+      border-radius: 8px;
+      border: none;
+      margin: 8px 0;
+      width: 100%;
+      font-size: 1rem;
     }
-
-    th {
-      background-color: #f0f0f0;
+    button {
+      background: #00c6ff;
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
     }
-
+    button:hover {
+      background: #0096cc;
+    }
+    .hotel-card {
+      background: #fff;
+      color: #333;
+      border-radius: 12px;
+      margin: 15px 0;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.3);
+      overflow: hidden;
+      transition: transform 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+    .hotel-card:hover {
+      transform: scale(1.03);
+    }
+    .hotel-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .hotel-info {
+      padding: 15px;
+    }
+    .hotel-info h3 {
+      margin: 0 0 10px;
+      color: #ff512f;
+    }
+    .hotel-info button {
+      width: auto;
+      padding: 10px 20px;
+      margin-top: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: rgba(0,0,0,0.2);
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
+  <header>
+    <h1>🏨 TravelEase Hotel Booking</h1>
+    <p>Book hotels from anywhere with one registration. 100% free usage!</p>
+  </header>
 
   <div class="container">
-    <div class="sidebar">
-      <h2>FoodDash</h2>
-      <a href="#">Dashboard</a>
-      <a href="#">Orders</a>
-      <a href="#">Restaurants</a>
-      <a href="#">Customers</a>
-      <a href="#">Drivers</a>
+    <!-- Registration & Login -->
+    <div class="auth" id="authSection">
+      <h2>Register / Sign In</h2>
+      <input type="text" id="username" placeholder="Enter Username">
+      <input type="password" id="password" placeholder="Enter Password">
+      <button onclick="register()">Register</button>
+      <button onclick="login()">Sign In</button>
+      <p id="authMsg"></p>
     </div>
 
-    <div class="main">
-      <div class="header">
-        <h1>Admin Dashboard</h1>
-        <span>Welcome, Admin</span>
-      </div>
+    <!-- Search Hotels -->
+    <div class="search-section hidden" id="searchSection">
+      <h2>Search Hotels</h2>
+      <input type="text" id="placeInput" placeholder="Enter City or Place (e.g. Goa)">
+      <button onclick="searchHotels()">Search</button>
+    </div>
 
-      <div class="cards">
-        <div class="card" id="total-orders">
-          <h3>Total Orders</h3>
-          <p>0</p>
-        </div>
-        <div class="card" id="total-customers">
-          <h3>Customers</h3>
-          <p>0</p>
-        </div>
-        <div class="card" id="total-revenue">
-          <h3>Revenue</h3>
-          <p>$0</p>
-        </div>
-      </div>
-
-      <div class="orders-table">
-        <h2>Recent Orders</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Customer</th>
-              <th>Restaurant</th>
-              <th>Amount</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="orders-body">
-            <!-- JS will insert rows here -->
-          </tbody>
-        </table>
-      </div>
+    <!-- Results -->
+    <div class="results hidden" id="resultsSection">
+      <h2>Available Hotels</h2>
+      <div id="hotelResults"></div>
     </div>
   </div>
 
+  <footer>
+    🌍 Free to use demo | TravelEase © 2025
+  </footer>
+
   <script>
-    const orders = [
-      { id: "FD001", customer: "Alice", restaurant: "Pizza Palace", amount: 25.99, status: "Delivered" },
-      { id: "FD002", customer: "Bob", restaurant: "Sushi Spot", amount: 42.50, status: "Preparing" },
-      { id: "FD003", customer: "Clara", restaurant: "Burger Joint", amount: 15.00, status: "Delivered" },
-      { id: "FD004", customer: "David", restaurant: "Noodle House", amount: 22.75, status: "Out for Delivery" }
-    ];
+    // Registration
+    function register() {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      if (user && pass) {
+        localStorage.setItem('hotelUser', JSON.stringify({user, pass}));
+        document.getElementById('authMsg').innerText = "✅ Registration successful! Please Sign In.";
+      } else {
+        document.getElementById('authMsg').innerText = "⚠️ Enter username and password.";
+      }
+    }
 
-    const totalOrders = orders.length;
-    const totalCustomers = new Set(orders.map(o => o.customer)).size;
-    const totalRevenue = orders.reduce((sum, o) => sum + o.amount, 0);
+    // Login
+    function login() {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      const saved = JSON.parse(localStorage.getItem('hotelUser'));
+      if (saved && saved.user === user && saved.pass === pass) {
+        document.getElementById('authSection').classList.add('hidden');
+        document.getElementById('searchSection').classList.remove('hidden');
+        document.getElementById('resultsSection').classList.remove('hidden');
+      } else {
+        document.getElementById('authMsg').innerText = "❌ Invalid credentials or not registered.";
+      }
+    }
 
-    document.getElementById("total-orders").querySelector("p").textContent = totalOrders;
-    document.getElementById("total-customers").querySelector("p").textContent = totalCustomers;
-    document.getElementById("total-revenue").querySelector("p").textContent = `$${totalRevenue.toFixed(2)}`;
+    // Demo Hotel Data with Photos
+    const hotels = {
+      "Delhi": [
+        {name: "Taj Palace", img: "https://source.unsplash.com/800x400/?hotel,delhi"},
+        {name: "The Oberoi", img: "https://source.unsplash.com/800x400/?luxury,delhi"},
+        {name: "ITC Maurya", img: "https://source.unsplash.com/800x400/?resort,delhi"}
+      ],
+      "Goa": [
+        {name: "Taj Exotica", img: "https://source.unsplash.com/800x400/?resort,goa"},
+        {name: "Le Méridien", img: "https://source.unsplash.com/800x400/?hotel,goa"},
+        {name: "Alila Diwa", img: "https://source.unsplash.com/800x400/?beach,goa"}
+      ],
+      "Mumbai": [
+        {name: "The Taj Mahal Palace", img: "https://source.unsplash.com/800x400/?hotel,mumbai"},
+        {name: "JW Marriott Juhu", img: "https://source.unsplash.com/800x400/?luxury,mumbai"},
+        {name: "Trident Nariman Point", img: "https://source.unsplash.com/800x400/?resort,mumbai"}
+      ]
+    };
 
-    const tbody = document.getElementById("orders-body");
+    // Search Hotels
+    function searchHotels() {
+      const place = document.getElementById('placeInput').value.trim();
+      const resultsDiv = document.getElementById('hotelResults');
+      resultsDiv.innerHTML = "";
 
-    orders.forEach(order => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${order.id}</td>
-        <td>${order.customer}</td>
-        <td>${order.restaurant}</td>
-        <td>$${order.amount.toFixed(2)}</td>
-        <td>${order.status}</td>
-      `;
-      tbody.appendChild(row);
-    });
+      if (hotels[place]) {
+        hotels[place].forEach(hotel => {
+          const card = document.createElement("div");
+          card.className = "hotel-card";
+          card.innerHTML = `
+            <img src="${hotel.img}" alt="${hotel.name}">
+            <div class="hotel-info">
+              <h3>${hotel.name}</h3>
+              <button onclick="alert('✅ Booking confirmed at ${hotel.name}!')">Book Now</button>
+            </div>`;
+          resultsDiv.appendChild(card);
+        });
+      } else {
+        resultsDiv.innerHTML = "<p>No hotels found for this location.</p>";
+      }
+    }
   </script>
 </body>
 </html>
